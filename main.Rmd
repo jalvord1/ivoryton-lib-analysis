@@ -20,13 +20,13 @@ library(DT)
 ```{r, echo = FALSE, include=FALSE}
 #Loading data
 #4-5
-data_4_5 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/4-5.csv")
+data_4_5 <- read.csv("4-5.csv")
 
 data_4_5 <- data_4_5 %>%
   mutate(year = "'04-05")
 
 #5-6
-data_5_6 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/5-6.csv")
+data_5_6 <- read.csv("5-6.csv")
 
 data_5_6 <- data_5_6[1:31, ]
 
@@ -35,7 +35,7 @@ data_5_6 <- data_5_6 %>%
   select(Num, Name, Paid.Amount, year)
 
 #6-7 
-data_6_7 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/6-7.csv")
+data_6_7 <- read.csv("6-7.csv")
 
 data_6_7 <- data_6_7[1:112, ]
 
@@ -44,7 +44,7 @@ data_6_7 <- data_6_7 %>%
   select(Num, Name, Paid.Amount, year)
 
 #7-8
-data_7_8 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/7-8.csv")
+data_7_8 <- read.csv("7-8.csv")
 
 data_7_8 <- data_7_8[1:7, ]
 
@@ -53,7 +53,7 @@ data_7_8 <- data_7_8 %>%
   select(Num, Name, Paid.Amount = Amount, year) 
 
 #8-9
-data_8_9 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/8-9.csv")
+data_8_9 <- read.csv("8-9.csv")
 
 data_8_9 <- data_8_9[1:111, ]
 
@@ -62,7 +62,7 @@ data_8_9 <- data_8_9 %>%
   select(Num, Name = Memo, Paid.Amount = Amount, year)
 
 #9-10
-data_9_10 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/9-10.csv")
+data_9_10 <- read.csv("9-10.csv")
 
 data_9_10 <- data_9_10[1:37, ]
 
@@ -71,7 +71,7 @@ data_9_10 <- data_9_10 %>%
   select(Num, Name = Memo, Paid.Amount = Amount, year)
 
 #10-11
-data_10_11 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/10-11.csv")
+data_10_11 <- read.csv("10-11.csv")
 
 data_10_11 <- data_10_11[1:119, ]
 
@@ -80,7 +80,7 @@ data_10_11 <- data_10_11 %>%
   select(Num, Name = Memo, Paid.Amount = Amount, year)
 
 #11-12
-data_11_12 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/11-12.csv", stringsAsFactors = FALSE)
+data_11_12 <- read.csv("11-12.csv", stringsAsFactors = FALSE)
 
 data_11_12 <- data_11_12[1:66, ]
 
@@ -89,7 +89,7 @@ data_11_12 <- data_11_12 %>%
   select(Num, Name, Paid.Amount = Amount, year)
 
 #12-13
-data_12_13 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/12-13.csv")
+data_12_13 <- read.csv("12-13.csv")
 
 data_12_13 <- data_12_13[1:51, ]
 
@@ -98,7 +98,7 @@ data_12_13 <- data_12_13 %>%
   select(Num, Name, Paid.Amount, year)
 
 #13-14
-data_13_14 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/13-14.csv")
+data_13_14 <- read.csv("13-14.csv")
 
 data_13_14 <- data_13_14[1:16, ]
 
@@ -108,7 +108,7 @@ data_13_14 <- data_13_14 %>%
 
 
 #14-15
-data_14_15 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/14-15.csv")
+data_14_15 <- read.csv("14-15.csv")
 
 data_14_15 <- data_14_15[1:154, ]
 
@@ -117,7 +117,7 @@ data_14_15 <- data_14_15 %>%
   select(Num, Name, Paid.Amount, year)
 
 #15-16
-data_15_16 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/15-16.csv")
+data_15_16 <- read.csv("15-16.csv")
 
 data_15_16 <- data_15_16[1:177, ]
 
@@ -126,7 +126,7 @@ data_15_16 <- data_15_16 %>%
   select(Num, Name, Paid.Amount, year)
 
 #16-17
-data_16_17 <- read.csv("/Users/juliannaalvord/Documents/ivoryton library data/16-17.csv")
+data_16_17 <- read.csv("16-17.csv")
 
 data_16_17$Name <- paste(data_16_17$X,data_16_17$X.1)
 
