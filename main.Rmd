@@ -151,3 +151,82 @@ combined.df <- combined.df %>%
 combined.df2 <- combined.df %>%
   arrange(last_name2)
 ```
+
+```{r, include = FALSE}
+#####WRITING CSV
+# write.csv(combined.df2, file = "uncleaned data.csv", row.names=FALSE)
+#giving to director of library for individual name cleaning
+```
+
+```{r, include=FALSE}
+#####GOT CLEANED DATA BACK
+#Reading in
+cleaned_data <- read.csv("cleaned data for r.csv", stringsAsFactors = FALSE)
+
+cleaned_data <- cleaned_data %>%
+  arrange(last_name2)
+```
+
+```{r, include = FALSE}
+#Creating final last name column: if company, keep full name, else keep fixed last name column
+cleaned_data <- cleaned_data %>%
+  mutate(last_name_final = ifelse(company == "yes", Name, last_name2))
+
+
+####################################################
+#How much money donated per year
+cleaned_data_grouped <- cleaned_data %>%
+  filter(!year %in% c("no", "7-Jun")) %>%
+  group_by(year) %>%
+  summarise(total_amount = sum(Paid.Amount)) 
+```
+
+###Total Donations per Year
+```{r, echo = FALSE}
+ggplot(cleaned_data_grouped, aes(x = year, y = total_amount, group = 1)) +
+  geom_line(color = "brown4", size = 1.5) +
+  theme_calc() +
+  ylab("Total Amount (in $)") +
+  scale_y_continuous(breaks = c(2500, 5000, 7500, 10000, 12500, 15000), labels = c("2,500", "5,000", "7,500", "10,000", "12,500", "15,000"))+
+  theme(axis.text = element_text(size = 9), axis.title = element_text(size = 12), plot.title = element_text(hjust = 0.5)) +
+  annotate("text", x = "'13-14", y = 400, label = "Lost Non-Profit Status")
+```
+
+###Top Donors
+```{r, echo = FALSE}
+cleaned_data <- cleaned_data %>%
+  mutate(`Lifetime Member` = ifelse(Paid.Amount >= 1000, "Yes", 
+                                    ifelse(last_name_final == "Jamieson", "Yes", "No"))) %>%
+  select(-c(Name, last_name, last_name2, Num))
+
+cleaned_data_names <- cleaned_data %>%
+  filter(!year == "no") %>%
+  group_by(last_name_final) %>%
+  summarise(`Total Number of Years` = n_distinct(year), `First Year` = min(year), `Most Recent Year` = max(year), `Total Amount` = sum(Paid.Amount), `Lifetime Member` = max(`Lifetime Member`)) %>%
+  arrange(desc(`Total Amount`), desc(`Total Number of Years`)) %>%
+  rename(Name = last_name_final)
+
+names_20_sum <- cleaned_data_names[1:20, ]
+
+#manually adding a total column
+#Is there a way to do this automatically?
+names_20_sum <- rbind(names_20_sum, c("", "", "", "", ""))
+names_20_sum <- rbind(names_20_sum, c("Total Amount", "", "", "", 22311.67, ""))
+
+lifetime_bold <- formatter("span", 
+  style = x ~ style("font-weight" = ifelse(x == "Yes", "bold", NA))) 
+
+#formatted table (for handout use)
+formattable(names_20_sum, list(
+  `Lifetime Member` = lifetime_bold, 
+  `Total Number of Years` = color_tile("transparent","brown4")))
+```
+
+#All Donors
+```{r, echo = FALSE}
+#DT::datatables for 
+as.datatable(formattable(cleaned_data_names, list(
+  `Lifetime Member` = lifetime_bold, 
+  `Total Number of Years` = color_tile("transparent","brown4"))))
+```
+
