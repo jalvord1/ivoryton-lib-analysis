@@ -1,5 +1,5 @@
 ---
-title: "Ivoryton Library Donation Data"
+title: "Ivoryton Library Donation Data (2004-2017)"
 output: 
   html_document
 ---
@@ -15,6 +15,7 @@ library(formattable)
 library(data.table)
 library(stringr)
 library(DT)
+library(janitor)
 ```
 
 ```{r, echo = FALSE, include=FALSE}
@@ -171,28 +172,60 @@ cleaned_data <- cleaned_data %>%
 #Creating final last name column: if company, keep full name, else keep fixed last name column
 cleaned_data <- cleaned_data %>%
   mutate(last_name_final = ifelse(company == "yes", Name, last_name2))
+```
 
-
-####################################################
+###Total Donations per Year
+```{r, echo = FALSE}
 #How much money donated per year
 cleaned_data_grouped <- cleaned_data %>%
   filter(!year %in% c("no", "7-Jun")) %>%
   group_by(year) %>%
   summarise(total_amount = sum(Paid.Amount)) 
-```
 
-###Total Donations per Year
-```{r, echo = FALSE}
-ggplot(cleaned_data_grouped, aes(x = year, y = total_amount, group = 1)) +
-  geom_line(color = "brown4", size = 1.5) +
+#creating variable for ggplot colors
+cleaned_data_grouped <- cleaned_data_grouped %>%
+  mutate(np_cutoff = ifelse(year %in% c("'13-14", "'14-15", "'15-16", "'16-17"), "var2", "var1"))
+
+###PLOT
+
+ggplot(cleaned_data_grouped, aes(x = year, y = total_amount, group = 1, colour=np_cutoff)) +
+  geom_line(size = 1.5) +
   theme_calc() +
   ylab("Total Amount (in $)") +
   scale_y_continuous(breaks = c(2500, 5000, 7500, 10000, 12500, 15000), labels = c("2,500", "5,000", "7,500", "10,000", "12,500", "15,000"))+
-  theme(axis.text = element_text(size = 9), axis.title = element_text(size = 12), plot.title = element_text(hjust = 0.5)) +
-  annotate("text", x = "'13-14", y = 400, label = "Lost Non-Profit Status")
+  theme(axis.text = element_text(size = 9), axis.title = element_text(size = 12), plot.title = element_text(hjust = 0.5), legend.position = "none") +
+  xlab("Year")+
+  annotate("text", x = "'13-14", y = 400, label = "Lost Non-Profit Status", fontface =2) +
+  scale_color_manual(values=c("#BB9EA0", "#7A060D")) 
+  # geom_segment(aes(x = "'16-17", y = 1700, xend = "'14-15", yend = 1200),
+  #                 arrow = arrow(length = unit(0.5, "cm")))
 ```
 
-###Top Donors
+###Total Donors per Year
+```{r, echo = FALSE}
+cleaned_data_grpd_donors <- cleaned_data %>%
+  filter(!year %in% c("no", "7-Jun")) %>%
+  group_by(year) %>%
+  summarise(total_donors = n_distinct(last_name_final))
+
+#creating variable for ggplot colors
+cleaned_data_grpd_donors <- cleaned_data_grpd_donors %>%
+  mutate(np_cutoff = ifelse(year %in% c("'13-14", "'14-15", "'15-16", "'16-17"), "var2", "var1"))
+
+###PLOT
+ggplot(cleaned_data_grpd_donors, aes(x = year, y = total_donors, group = 1, colour=np_cutoff)) +
+  geom_line(size = 1.5) +
+  theme_calc() +
+  ylab("Total # of Donors") +
+  scale_y_continuous(breaks = c(25, 50, 75, 100, 125, 150), labels = c("25", "50", "75", "100", "125", "150"))+
+  theme(axis.text = element_text(size = 9), axis.title = element_text(size = 12), plot.title = element_text(hjust = 0.5), legend.position = "none") +
+  xlab("Year")+
+  annotate("text", x = "'13-14", y = 8, label = "Lost Non-Profit Status", fontface =2) +
+  scale_color_manual(values=c("#BB9EA0", "#7A060D")) 
+```
+
+
+###Top 20 Donors
 ```{r, echo = FALSE}
 cleaned_data <- cleaned_data %>%
   mutate(`Lifetime Member` = ifelse(Paid.Amount >= 1000, "Yes", 
@@ -208,10 +241,15 @@ cleaned_data_names <- cleaned_data %>%
 
 names_20_sum <- cleaned_data_names[1:20, ]
 
+names_20_sum$`Total Amount` <- as.numeric(names_20_sum$`Total Amount`)
+
+# names_20_sum <- names_20_sum %>%
+#   adorn_totals("row")
+
 #manually adding a total column
-#Is there a way to do this automatically?
+#Is there a way to do this automatically? (tried above with adorn totals)
 names_20_sum <- rbind(names_20_sum, c("", "", "", "", ""))
-names_20_sum <- rbind(names_20_sum, c("Total Amount", "", "", "", 22311.67, ""))
+names_20_sum <- rbind(names_20_sum, c("Total Amount", "", "", "", "$22311.67", ""))
 
 lifetime_bold <- formatter("span", 
   style = x ~ style("font-weight" = ifelse(x == "Yes", "bold", NA))) 
@@ -222,7 +260,7 @@ formattable(names_20_sum, list(
   `Total Number of Years` = color_tile("transparent","brown4")))
 ```
 
-#All Donors
+###All Donors
 ```{r, echo = FALSE}
 #DT::datatables for 
 as.datatable(formattable(cleaned_data_names, list(
