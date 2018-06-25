@@ -16,6 +16,7 @@ library(data.table)
 library(stringr)
 library(DT)
 library(janitor)
+
 ```
 
 ```{r, echo = FALSE, include=FALSE}
@@ -257,7 +258,7 @@ lifetime_bold <- formatter("span",
 #formatted table (for handout use)
 formattable(names_20_sum, list(
   `Lifetime Member` = lifetime_bold, 
-  `Total Number of Years` = color_tile("transparent","brown4")))
+  `Total Number of Years` = color_tile("transparent","#CC9094")))
 ```
 
 ###All Donors
@@ -265,6 +266,6 @@ formattable(names_20_sum, list(
 #DT::datatables for 
 as.datatable(formattable(cleaned_data_names, list(
   `Lifetime Member` = lifetime_bold, 
-  `Total Number of Years` = color_tile("transparent","brown4"))))
+  `Total Number of Years` = color_tile("transparent","#CC9094"))))
 ```
 
